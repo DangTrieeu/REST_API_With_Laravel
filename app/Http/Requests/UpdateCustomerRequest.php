@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class UpdateCustomerRequest extends FormRequest
 {
@@ -11,7 +12,7 @@ class UpdateCustomerRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -21,8 +22,27 @@ class UpdateCustomerRequest extends FormRequest
      */
     public function rules(): array
     {
-        return [
-            //
-        ];
+        $method = $this->method();
+        if ($method == "PUT") {
+            return [
+                'name' => ['required'],
+                'type' => ['required', Rule::in(['I', 'B'])],
+                'email' => ['required', 'email'],
+                'address' => ['required'],
+                'city' => ['required'],
+                'state' => ['required'],
+                'postal_code' => ['required'],
+            ];
+        } else {
+            return [
+                'name' => ['sometimes', 'required'],
+                'type' => ['sometimes', 'required', Rule::in(['I', 'B'])],
+                'email' => ['sometimes', 'required', 'email'],
+                'address' => ['sometimes', 'required'],
+                'city' => ['sometimes', 'required'],
+                'state' => ['sometimes', 'required'],
+                'postal_code' => ['sometimes', 'required'],
+            ];
+        }
     }
 }
